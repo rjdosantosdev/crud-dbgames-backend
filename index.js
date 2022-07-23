@@ -3,7 +3,6 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
-const porta = 3333;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -34,4 +33,4 @@ app.get("/games", (req, res) => {
   });
 });
 
-app.listen(porta, () => console.log(`Servidor rodando na porta ${porta}`));
+app.listen(process.env.PORT || 3000, () => console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env));
