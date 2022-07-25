@@ -1,9 +1,15 @@
 const connection = require('./connection');
+const mysql = require("mysql2");
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3000;
+
+const connection = mysql.createConnection(process.env.DATABASE_URL);
+console.log('Connected to PlanetScale!');
+connection.connect();
 
 app.use(cors());
 app.use(bodyParser.json());
