@@ -1,4 +1,3 @@
-const connection = require('./connection');
 const mysql = require("mysql2");
 require('dotenv').config();
 const express = require("express");
