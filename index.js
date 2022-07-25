@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3000;
 
-const connection = mysql.createConnection(process.env.DATABASE_URL);
+const connection = mysql.createConnection(env.DATABASE_URL);
 console.log('Connected to PlanetScale!');
 connection.connect();
 
