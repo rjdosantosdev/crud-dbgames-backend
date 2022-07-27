@@ -1,25 +1,36 @@
-const connection = require("./connection");
+// const connection = require("./connection");
 const mysql = require("mysql2");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3001;
+
+const connection = mysql.createConnection({
+  database: "crudgames",
+  user: "root",
+  host: "localhost",
+  password: "",
+});
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post("/get", (req, res) => {
+app.post("/send", (req, res) => {
   const game = req.body.Game;
   const price = req.body.Price;
   const category = req.body.Category;
 
+  const form = req.register;
+  console.log(form);
+
   const SQL = "INSERT INTO games (`game`, `cost`, `category`) VALUES (?, ?, ?)";
-  connection.query(SQL, [game, price, category], (err, results) => {
-    if (err) throw console.log(err);
-    else {
-      results;
+  connection.query(SQL, [game, price, category], (err) => {
+    if (err) {
+      res.send(false);
+    } else {
+      res.send(true);
     }
   });
 });
