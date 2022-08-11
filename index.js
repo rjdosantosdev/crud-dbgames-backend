@@ -1,10 +1,10 @@
 // const connection = require("./connection");
 const mysql = require("mysql2");
 const express = require("express");
-const cors = require("cors");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
-const port = 3001;
+const port = 8080;
 
 const connection = mysql.createConnection({
   database: "crudgames",
@@ -13,31 +13,56 @@ const connection = mysql.createConnection({
   password: "",
 });
 
-app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
-app.post("/send", (req, res) => {
-  const game = req.body.Game;
-  const price = req.body.Price;
-  const category = req.body.Category;
+app.post("/send", (request, response) => {
+  connection.query(
+    `INSERT INTO games (game, cost, category)VALUES ("${request.body.game}", "${request.body.cost}", "${request.body.category}")`,
+    (err) => {
+      if (err) {
+        response.send(false);
+        console.log(err);
+      } else {
+        response.send(true);
+      }
+    }
+  );
+});
 
-  const form = req.register;
-  console.log(form);
+app.put("/edit", (request, response) => {
+  const id = request.body.id;
+  const game = request.body.game;
+  const cost = request.body.cost;
+  const category = request.body.category;
 
-  const SQL = "INSERT INTO games (`game`, `cost`, `category`) VALUES (?, ?, ?)";
-  connection.query(SQL, [game, price, category], (err) => {
+  connection.query(
+    "UPDATE games SET `game` = ?, `cost` = ?, `category` = ? WHERE `id` = ?",
+    [game, cost, category, id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        response.send(result);
+      }
+    }
+  );
+});
+
+app.delete("/delete/:id", (request, response) => {
+  const { id } = request.params;
+  connection.query("DELETE FROM games WHERE id = ?", [id], (err, result) => {
     if (err) {
-      res.send(false);
+      console.log(err);
     } else {
-      res.send(true);
+      response.send(result);
     }
   });
 });
 
-app.get("/games", (req, res) => {
+app.get("/", (request, response) => {
   connection.query("SELECT * FROM games", (err, results) => {
-    res.send(results);
+    response.json(results);
   });
 });
 
