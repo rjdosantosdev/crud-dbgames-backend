@@ -1,4 +1,4 @@
-// const connection = require("./connection");
+const connection = require("./connection");
 const mysql = require("mysql2");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -6,12 +6,12 @@ const cors = require("cors");
 const app = express();
 const port = 8080;
 
-const connection = mysql.createConnection({
-  database: "dbgames",
-  user: "root",
-  host: "localhost",
-  password: "",
-});
+// const connection = mysql.createConnection({
+//   database: "dbgames",
+//   user: "root",
+//   host: "localhost",
+//   password: "",
+// });
 
 app.use(bodyParser.json());
 app.use(cors());
