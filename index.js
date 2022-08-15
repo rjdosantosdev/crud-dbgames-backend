@@ -1,4 +1,4 @@
-const connection = require("./connection");
+// const connection = require("./connection");
 const mysql = require("mysql2");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -6,63 +6,86 @@ const cors = require("cors");
 const app = express();
 const port = 8080;
 
-// const connection = mysql.createConnection({
-//   database: "crudgames",
-//   user: "root",
-//   host: "localhost",
-//   password: "",
-// });
+const connection = mysql.createConnection({
+  database: "dbgames",
+  user: "root",
+  host: "localhost",
+  password: "",
+});
 
 app.use(bodyParser.json());
 app.use(cors());
 
 app.post("/send", (request, response) => {
+  const jogo = request.body.jogo;
+  const preco = request.body.preco;
+  const genero = request.body.newGenero;
+  console.log(genero);
   connection.query(
-    `INSERT INTO games (game, cost, category)VALUES ("${request.body.game}", "${request.body.cost}", "${request.body.category}")`,
-    (err) => {
+    `INSERT INTO dbgames.jogos (jogo, preco, genero) VALUES ('${jogo}', '${preco}', '${genero}')`,
+    (err, result) => {
       if (err) {
         response.send(false);
         console.log(err);
       } else {
         response.send(true);
+        console.log(result);
       }
     }
   );
 });
 
-app.put("/edit", (request, response) => {
-  const id = request.body.id;
-  const game = request.body.game;
-  const cost = request.body.cost;
-  const category = request.body.category;
+// app.put("/edit", (request, response) => {
+//   const id = request.body.id;
+//   const game = request.body.game;
+//   const cost = request.body.cost;
+//   const category = request.body.category;
 
-  connection.query(
-    "UPDATE games SET `game` = ?, `cost` = ?, `category` = ? WHERE `id` = ?",
-    [game, cost, category, id],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        response.send(result);
-      }
-    }
-  );
-});
+//   connection.query(
+//     "UPDATE jogos SET `jogo` = ?, `preco` = ?, `genero` = ? WHERE `j.cod_jogo` = ?",
+//     [game, cost, category, id],
+//     (err, result) => {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//         response.send(result);
+//       }
+//     }
+//   );
+// });
 
-app.delete("/delete/:id", (request, response) => {
-  const { id } = request.params;
-  connection.query("DELETE FROM games WHERE id = ?", [id], (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      response.send(result);
-    }
-  });
-});
+// app.delete("/delete/:id", (request, response) => {
+//   const { id } = request.params;
+//   connection.query(
+//     "DELETE FROM jogos WHERE j.cod_jogo = ?",
+//     [id],
+//     (err, result) => {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//         response.send(result);
+//       }
+//     }
+//   );
+// });
 
 app.get("/", (request, response) => {
-  connection.query("SELECT * FROM games", (err, results) => {
-    response.json(results);
+  connection.query(
+    "SELECT j.id_jogo, j.jogo, j.preco, g.id_genero, g.genero FROM jogos j JOIN generos g ON j.genero = g.id_genero",
+    (err, results) => {
+      if (err) {
+        console.log("erro join" + err);
+      } else {
+        response.json(results);
+      }
+    }
+  );
+});
+
+app.get("/generos", (request, response) => {
+  connection.query("SELECT * FROM generos;", (err, results) => {
+    if (err) console.log("erro generos" + err);
+    else response.json(results);
   });
 });
 
