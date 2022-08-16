@@ -1,5 +1,4 @@
 const connection = require("./connection");
-const mysql = require("mysql2");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
